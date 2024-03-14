@@ -1,5 +1,5 @@
 <?php
-include 'migration/userTbl.php';
+include '../migration/userTbl.php';
 
 $tbl = new UserTable();
 $result = $tbl->createTbl();

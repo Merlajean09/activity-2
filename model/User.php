@@ -5,15 +5,22 @@ class UserModel extends Database
 {
     public function create($params)
     {
-        if(empty($params['username'])){
-            return ['message' => 'username is required'];
+        $requiredFields = ['username','email','password'];
+
+        foreach ($requiredFields as $key){
+            if(empty($params[$key])) {
+                return ['message' => "$key is required" ];
+            }
         }
-        if(empty($params['email'])){
-            return ['message' => 'email is required'];
-        }
-        if(empty($params['password'])){
-            return ['message' => 'password is required'];
-        }
+        // if(empty($params['username'])){
+        //     return ['message' => 'username is required'];
+        // }
+        // if(empty($params['email'])){
+        //     return ['message' => 'email is required'];
+        // }
+        // if(empty($params['password'])){
+        //     return ['message' => 'password is required'];
+        // }
         $username = $params['username'];
         $email = $params['email'];
         $password = $params['password'];
@@ -37,11 +44,13 @@ class UserModel extends Database
 
     public function getAll()
     {
-        $getAll = $this->conn->query("SELECT * FROM users");
-        
-        if ($getAll->num_rows > 0)
-          $result = $getAll->fetch_all(MYSQLI_ASSOC);
-          return $result;
+        $getAll = $this->conn->query("SELECT * FROM user");
+        $result = $getAll->fetch_all(MYSQLI_ASSOC);
+        if ($result){
+            return $result;
+        }
+          
+       
     }
 
     public function Search($params)
@@ -52,11 +61,15 @@ class UserModel extends Database
         }
 
         $email = $params['email'] ?? '';
-            $isSearch = $this->conn->query("SELECT * FROM user WHERE email LIKE '%email%'");
-
-              if ($isSearch->num_rows > 0)
-              $result = $isSearch->fetch_all(MYSQLI_ASSOC);
-              return $result;
+            $isSearch = $this->conn->query("SELECT * FROM user WHERE email LIKE '%$email%'");
+            $result = $isSearch->fetch_all(MYSQLI_ASSOC);
+              if ($isSearch->num_rows > 0){
+                return $result;
+              }else{
+                return json_encode(['message' => 'No record found!']);
+              }
+             
+             
     }
 
 
